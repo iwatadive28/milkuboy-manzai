@@ -1,0 +1,20 @@
+{
+  "name": "milkuboy-manzai",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "framer-motion": "^10.0.0",
+    "next": "^13.4.0",
+    "openai": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.1",
+    "typescript": "^5.2.0"
+  }
+}
