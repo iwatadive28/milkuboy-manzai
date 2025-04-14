@@ -68,130 +68,104 @@ export default function TemplatePage() {
           {loading && <p className="text-center text-blue-500">AIが補完中です...</p>}
           <TemplateForm onSubmit={handleSubmit} />
         </>
+      ) : templateData === null ? (
+        <p className="text-center text-blue-500">テンプレートを読み込み中です...</p>
       ) : (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-700">✅ 入力内容の確認・編集</h2>
+          <h2 className="text-xl font-semibold text-gray-700 border-b pb-1">✅ 入力内容の確認・編集</h2>
 
-          <div className="space-y-2">
-            {/* テーマ */}
-            <label className="block">
-              <span className="font-bold">テーマ：</span>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-                value={templateData.theme}
-                onChange={(e) =>
-                  setTemplateData({ ...templateData, theme: e.target.value })
-                }
-              />
-            </label>
-
-            {/* 上位概念 */}
-            <label className="block">
-              <span className="font-bold">上位概念：</span>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-                value={templateData.category}
-                onChange={(e) =>
-                  setTemplateData({ ...templateData, category: e.target.value })
-                }
-              />
-            </label>
-
-            {/* 客席アイテム */}
-            <label className="block">
-              <span className="font-bold">客席アイテム：</span>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-                value={templateData.item}
-                onChange={(e) =>
-                  setTemplateData({ ...templateData, item: e.target.value })
-                }
-              />
-            </label>
-
-            {/* 本命ではないもの */}
-            <label className="block">
-              <span className="font-bold">本命ではないもの（notX）：</span>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded px-2 py-1"
-                value={templateData.notX}
-                onChange={(e) =>
-                  setTemplateData({ ...templateData, notX: e.target.value })
-                }
-              />
-            </label>
-
-            {/* 特徴リスト */}
-            <div>
-              <strong>特徴リスト：</strong>
-              {templateData.features.map((f: any, i: number) => (
-                <div key={i} className="flex items-center gap-2 mt-2">
-                  <input
-                    type="text"
-                    className="flex-1 border border-blue-300 rounded px-2 py-1"
-                    placeholder={`Xfeat${i + 1}`}
-                    value={f.x}
-                    onChange={(e) => {
-                      const newFeatures = [...templateData.features];
-                      newFeatures[i].x = e.target.value;
-                      setTemplateData({ ...templateData, features: newFeatures });
-                    }}
-                  />
-                  <input
-                    type="text"
-                    className="flex-1 border border-red-300 rounded px-2 py-1"
-                    placeholder={`notXfeat${i + 1}`}
-                    value={f.notx}
-                    onChange={(e) => {
-                      const newFeatures = [...templateData.features];
-                      newFeatures[i].notx = e.target.value;
-                      setTemplateData({ ...templateData, features: newFeatures });
-                    }}
-                  />
-                  <button
-                    className="text-sm text-red-600"
-                    onClick={() => {
-                      const newFeatures = templateData.features.filter((_, idx) => idx !== i);
-                      setTemplateData({ ...templateData, features: newFeatures });
-                    }}
-                  >
-                    削除
-                  </button>
-                </div>
-              ))}
-              <button
-                className="mt-2 text-sm text-blue-600"
-                onClick={() => {
-                  setTemplateData({
-                    ...templateData,
-                    features: [...templateData.features, { x: "", notx: "" }],
-                  });
-                }}
-              >
-                + 特徴を追加
-              </button>
-            </div>
+          {/* テーマ・基本項目（縦並びに変更） */}
+          <div className="space-y-4">
+            {[
+              ["テーマ", "theme"],
+              ["上位概念", "category"],
+              ["客席アイテム", "item"],
+              ["本命ではないもの（notX）", "notX"],
+            ].map(([label, key]) => (
+              <label key={key} className="block">
+                <span className="font-bold text-gray-700 block mb-1">{label}：</span>
+                <input
+                  type="text"
+                  className="block w-full border border-gray-300 rounded px-4 py-3 text-lg"
+                  value={templateData[key]}
+                  onChange={(e) =>
+                    setTemplateData({ ...templateData, [key]: e.target.value })
+                  }
+                />
+              </label>
+            ))}
           </div>
 
-          <button
-            onClick={() => setSubmitted(false)}
-            className="mt-6 bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            🔁 戻って修正する
-          </button>
-          <button
-            onClick={() => {
-              localStorage.setItem("milkuboy_template", JSON.stringify(templateData));
-              router.push("/script");
-            }}
-            className="mt-6 bg-green-600 text-white px-4 py-2 rounded"
-          >
-            🎤 漫才を生成する
-          </button>
+          {/* 特徴リスト（テキストボックス大きめに） */}
+          <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 mt-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">🧩 特徴リスト</h3>
+            {templateData.features.map((f: any, i: number) => (
+              <div key={i} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center mb-4">
+                <input
+                  type="text"
+                  className="flex-1 border border-blue-300 rounded px-4 py-3 text-base"
+                  placeholder={`Xfeat${i + 1}`}
+                  value={f.x}
+                  onChange={(e) => {
+                    const newFeatures = [...templateData.features];
+                    newFeatures[i].x = e.target.value;
+                    setTemplateData({ ...templateData, features: newFeatures });
+                  }}
+                />
+                <input
+                  type="text"
+                  className="flex-1 border border-red-300 rounded px-4 py-3 text-base"
+                  placeholder={`notXfeat${i + 1}`}
+                  value={f.notx}
+                  onChange={(e) => {
+                    const newFeatures = [...templateData.features];
+                    newFeatures[i].notx = e.target.value;
+                    setTemplateData({ ...templateData, features: newFeatures });
+                  }}
+                />
+                <button
+                  className="text-sm text-red-600 hover:underline"
+                  onClick={() => {
+                    const newFeatures = templateData.features.filter((_, idx) => idx !== i);
+                    setTemplateData({ ...templateData, features: newFeatures });
+                  }}
+                >
+                  削除
+                </button>
+              </div>
+            ))}
+            <button
+              className="mt-2 text-sm text-blue-600 hover:underline"
+              onClick={() =>
+                setTemplateData({
+                  ...templateData,
+                  features: [...templateData.features, { x: "", notx: "" }],
+                })
+              }
+            >
+              + 特徴を追加
+            </button>
+          </div>
+
+
+          {/* アクションボタン */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
+            <button
+              onClick={() => setSubmitted(false)}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              🔁 戻って修正する
+            </button>
+            <button
+              onClick={() => {
+                localStorage.setItem("milkuboy_template", JSON.stringify(templateData));
+                router.push("/script");
+              }}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              🎤 漫才を生成する
+            </button>
+          </div>
         </div>
       )}
     </div>

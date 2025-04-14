@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 ユーザーが入力した「テーマ（本命X）」を元に、以下の5つの情報をJSON形式で補完してください。
 
 - 上位概念（好きな○○）
-- 客席から受け取るもの（漫才の枕に使える小道具）
-- 本命ではないもの（notX）
-- 特徴ペア（Xfeat, notXfeat）を5組以上。Xfeatは「ネタとしていじりやすい」「意外性やギャップがある」特徴にすること。notXfeatはその逆。
+- 客席から受け取るもの（テーマと関係ない、もらってもうれしくないもの。なんぼあってもいいですからね～のボケにつながる）
+- 本命ではないもの（notX、全く関係ないもの、相関がないもの）
+- 特徴ペア（Xfeat, notXfeat）を5組以上。Xfeatは「themeをネタとしていじりやすい」「意外性やギャップがある」特徴にすること。notXfeatは(theme)の特徴の反対。。
 
 特徴ペアの例（themeが"宮崎"の場合）
 "features": [
