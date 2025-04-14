@@ -23,7 +23,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 - 上位概念（好きな○○）
 - 客席から受け取るもの（漫才の枕に使える小道具）
 - 本命ではないもの（notX）
-- 特徴ペア（Xfeat, notXfeat）を5〜13組
+- 特徴ペア（Xfeat, notXfeat）を5組以上。Xfeatは「ネタとしていじりやすい」「意外性やギャップがある」特徴にすること。notXfeatはその逆。
+
+特徴ペアの例（themeが"宮崎"の場合）
+"features": [
+  { "x": "局が2つしかない", "notx": "誰もが毎朝テレビを楽しみにしてる" },
+  { "x": "宮城と間違えられがち", "notx": "一度聴いたら忘れられない特徴的な県名" },
+  ...
+]
 
 出力形式：
 {
@@ -35,6 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ...
   ]
 }
+
 `;
 
   const userPrompt = `本命（テーマ）は「${theme}」です。`;
