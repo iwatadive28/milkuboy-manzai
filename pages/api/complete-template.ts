@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o", // GPT-4o-mini 相当
+      model: "gpt-4o-mini", // GPT-4o-mini 相当
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

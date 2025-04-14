@@ -109,8 +109,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // GPT-4o-miniでも可
+      model: "gpt-4o", // ✅ 応答が高速なモデルに切り替え
       messages: [{ role: "user", content: prompt }],
+      temperature: 0.7
     });
 
     const script = completion.choices[0].message.content;
