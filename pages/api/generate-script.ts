@@ -1,24 +1,28 @@
 // pages/api/generate-script.ts
-import { NextApiRequest, NextApiResponse } from "next";
 import { OpenAI } from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+// Edge Function 用
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(req: Request) {
   if (req.method !== "POST") {
-    res.status(405).end("Method not allowed");
-    return;
+    return new Response("Method not allowed", { status: 405 });
   }
 
-  const { theme, category, item, notX, features } = req.body;
+  const body = await req.json();
+  const { theme, category, item, notX, features } = body;
 
   const formattedFeatures = features
     .map((f: any, i: number) => `Xfeat${i + 1}：「${f.x}」 / notXfeat${i + 1}：「${f.notx}」`)
     .join("\n");
 
-    const prompt = `
+  const prompt = `
     あなたは、お笑いコンビ「ミルクボーイ」の脚本作家です。
     
     以下のテンプレート情報をもとに、ミルクボーイの漫才構成に忠実な台本を会話形式で生成してください。
@@ -107,17 +111,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
     
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o", // ✅ 応答が高速なモデルに切り替え
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7
-    });
-
-    const script = completion.choices[0].message.content;
-    res.status(200).json({ script });
-  } catch (e: any) {
-    console.error("生成エラー:", e);
-    res.status(500).json({ script: "生成中にエラーが発生しました。" });
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+      });
+  
+      const script = completion.choices[0].message.content;
+      return new Response(JSON.stringify({ script }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (e) {
+      console.error("生成エラー:", e);
+      return new Response(
+        JSON.stringify({ script: "生成中にエラーが発生しました。" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
   }
-}
