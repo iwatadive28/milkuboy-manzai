@@ -1,0 +1,26 @@
+name: Build Check
+
+on:
+  push:
+    branches:
+      - main  # 開発ブランチに合わせて（もしmainじゃないなら直してね）
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Node.js 20を使う（今ならこれが無難）
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: npm run build
