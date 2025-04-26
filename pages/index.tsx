@@ -63,6 +63,10 @@ export default function TemplatePage() {
         テーマと特徴を入力してください（未入力項目はAI補完されます）
       </p>
 
+      <p className="text-xs text-center text-gray-400 mt-6">
+        ※本アプリはミルクボーイ様の漫才スタイルにインスパイアされていますが、公式とは関係ありません。
+      </p>
+
       {!submitted ? (
         <>
           {loading && <p className="text-center text-blue-500">AIが補完中です...</p>}
