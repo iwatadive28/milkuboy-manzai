@@ -3,8 +3,12 @@ name: Build Check
 on:
   push:
     branches:
-      - main  # 開発ブランチに合わせて（もしmainじゃないなら直してね）
+      - main
+      - develop 
   pull_request:
+    branches:
+      - main
+      - develop 
 
 jobs:
   build:
